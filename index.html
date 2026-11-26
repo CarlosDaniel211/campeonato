@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa Libertadores - Edição Amador Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fontes Google (Cinzel e Montserrat) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        // Configuração de cores e fontes do tema continental escuro e dourado/preto
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#FACC15',
+                            500: '#EAB308',
+                            600: '#CA8A04',
+                            700: '#A16207',
+                            glow: '#FFE57F'
+                        },
+                        libertadores: {
+                            dark: '#0a0d14',
+                            card: '#121824',
+                            border: '#2a3447',
+                            accent: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        title: ['Cinzel', 'serif'],
+                        sans: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            background-color: #07090e;
+            color: #e2e8f0;
+            font-family: 'Montserrat', sans-serif;
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(234, 179, 8, 0.09) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(30, 41, 59, 0.55) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF5C0 0%, #EAB308 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #ca8a04;
+        }
+        .glass-panel {
+            background: rgba(18, 24, 36, 0.78);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- CABEÇALHO PRINCIPAL -->
+    <header class="sticky top-0 z-40 border-b border-gold-600/30 bg-libertadores-dark/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-20 py-2 flex items-center justify-between gap-2">
+            <!-- Marca e Troféu -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('tabela')">
+                <div class="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-gradient-to-tr from-gold-600 via-yellow-300 to-amber-700 p-[2px] flex items-center justify-center shadow-lg shadow-gold-500/20">
+                    <div class="w-full h-full bg-libertadores-dark rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-trophy text-gold-400 text-lg sm:text-xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-title font-black text-lg sm:text-2xl tracking-wider gold-gradient-text uppercase leading-tight">Copa Libertadores</h1>
+                    <p class="text-[10px] sm:text-xs text-slate-400 font-medium tracking-widest uppercase">Edição Amador Pro</p>
+                </div>
+            </div>
+
+            <!-- Navegação Desktop -->
+            <nav class="hidden lg:flex items-center space-x-1 bg-libertadores-card/80 p-1.5 rounded-xl border border-slate-800">
+                <button onclick="switchTab('tabela')" id="nav-tabela" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center space-x-2 text-gold-400 bg-slate-800">
+                    <i class="fa-solid fa-table-cells"></i> <span>Tabela & Grupos</span>
+                </button>
+                <button onclick="switchTab('jogos')" id="nav-jogos" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-calendar-days"></i> <span>Jogos</span>
+                </button>
+                <button onclick="switchTab('estatisticas')" id="nav-estatisticas" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-chart-line"></i> <span>Estatísticas</span>
+                </button>
+                <button onclick="switchTab('suspensos')" id="nav-suspensos" class="nav-btn px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <span>Suspensos</span>
+                </button>
+                <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn admin-only-element px-3.5 py-2 rounded-lg text-xs font-semibold text-amber-400 hover:text-amber-300 transition-all duration-200 flex items-center space-x-2 border border-amber-500/20">
+                    <i class="fa-solid fa-sliders"></i> <span>Painel Admin</span>
+                </button>
+            </nav>
+
+            <!-- Ações Rápidas e Menu Mobile -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <button onclick="copyViewerLink()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center space-x-2 border border-slate-700 transition-all">
+                    <i class="fa-solid fa-share-nodes text-gold-400"></i>
+                    <span class="hidden sm:inline">Link Espectador</span>
+                </button>
+
+                <button id="auth-mode-btn" onclick="toggleAuthMode()" class="px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold flex items-center space-x-2 transition-all">
+                    <!-- Atualizado via JS -->
+                </button>
+
+                <button onclick="openLiveMatchSelector()" class="relative group overflow-hidden rounded-xl p-[1px] font-semibold text-xs">
+                    <span class="absolute inset-0 bg-gradient-to-r from-red-600 via-amber-500 to-red-600 rounded-xl group-hover:opacity-90 transition-opacity"></span>
+                    <span class="relative block px-3 py-2 bg-slate-950 rounded-[11px] text-white flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+                        <span class="uppercase font-bold tracking-wider">Ao Vivo</span>
+                    </span>
+                </button>
+
+                <button onclick="toggleMobileMenu()" aria-label="Abrir menu" class="lg:hidden text-slate-300 hover:text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu Responsivo Mobile/Tablet -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-800 bg-libertadores-card px-4 py-3 space-y-1.5">
+            <button onclick="switchTab('tabela'); toggleMobileMenu();" class="mobile-nav-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-gold-400 bg-slate-800">
+                <i class="fa-solid fa-table-cells mr-2"></i> Tabela & Grupos
+            </button>
+            <button onclick="switchTab('jogos'); toggleMobileMenu();" class="mobile-nav-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+                <i class="fa-solid fa-calendar-days mr-2"></i> Jogos
+            </button>
+            <button onclick="switchTab('estatisticas'); toggleMobileMenu();" class="mobile-nav-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+                <i class="fa-solid fa-chart-line mr-2"></i> Estatísticas
+            </button>
+            <button onclick="switchTab('suspensos'); toggleMobileMenu();" class="mobile-nav-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+                <i class="fa-solid fa-triangle-exclamation mr-2"></i> Suspensos
+            </button>
+            <button onclick="switchTab('admin'); toggleMobileMenu();" class="mobile-nav-btn admin-only-element w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-amber-400">
+                <i class="fa-solid fa-sliders mr-2"></i> Painel Admin
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ABA 1: TABELA E GRUPOS -->
+        <section id="tab-tabela" class="tab-content space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="font-title text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">Fase de Grupos</h2>
+                    <p class="text-sm text-slate-400">Classificação calculada automaticamente a partir das partidas encerradas</p>
+                </div>
+                <div class="flex items-center space-x-4 text-xs text-slate-400 bg-slate-900/70 px-3.5 py-2 rounded-xl border border-slate-800">
+                    <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-gold-400"></span><span>Zona de Classificação</span></span>
+                </div>
+            </div>
+
+            <div id="groups-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Preenchido via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ABA 2: JOGOS -->
+        <section id="tab-jogos" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <h2 class="font-title text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">Calendário de Jogos</h2>
+                    <p class="text-sm text-slate-400">Filtre por grupo, ajuste datas no modo admin e abra o Match Center ao vivo</p>
+                </div>
+                <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                    <select id="filter-group-matches" onchange="renderMatches()" class="w-full sm:w-auto bg-slate-900 text-slate-200 border border-slate-700 text-sm rounded-xl px-3.5 py-2.5 outline-none focus:border-gold-500">
+                        <option value="ALL">Todos os Grupos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="matches-container" class="space-y-4">
+                <!-- Preenchido via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ABA 3: ESTATÍSTICAS -->
+        <section id="tab-estatisticas" class="tab-content hidden space-y-8">
+            <div>
+                <h2 class="font-title text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">Estatísticas do Torneio</h2>
+                <p class="text-sm text-slate-400">Artilharia oficial e histórico disciplinar de cartões amarelos e vermelhos</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- ARTILHARIA -->
+                <div class="glass-panel rounded-2xl p-6 border border-gold-500/20 relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 text-gold-500/10 text-9xl font-black pointer-events-none">
+                        <i class="fa-solid fa-futbol"></i>
+                    </div>
+                    <h3 class="font-title text-xl font-bold text-gold-400 flex items-center space-x-3 mb-6">
+                        <i class="fa-solid fa-fire text-amber-500"></i>
+                        <span>Artilharia (Gols)</span>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="text-xs text-slate-400 uppercase bg-slate-900/80">
+                                <tr>
+                                    <th class="p-3">#</th>
+                                    <th class="p-3">Jogador</th>
+                                    <th class="p-3">Time</th>
+                                    <th class="p-3 text-right">Gols</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-scorers-body" class="divide-y divide-slate-800/60 font-medium">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- RANKING DE CARTÕES -->
+                <div class="glass-panel rounded-2xl p-6 border border-slate-700/60 relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 text-red-500/10 text-9xl font-black pointer-events-none">
+                        <i class="fa-solid fa-clone"></i>
+                    </div>
+                    <h3 class="font-title text-xl font-bold text-white flex items-center space-x-3 mb-6">
+                        <i class="fa-solid fa-layer-group text-yellow-500"></i>
+                        <span>Controle de Cartões</span>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="text-xs text-slate-400 uppercase bg-slate-900/80">
+                                <tr>
+                                    <th class="p-3">Jogador</th>
+                                    <th class="p-3">Time</th>
+                                    <th class="p-3 text-center">Amarelos</th>
+                                    <th class="p-3 text-center">Vermelhos</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cards-ranking-body" class="divide-y divide-slate-800/60 font-medium">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 4: SUSPENSOS -->
+        <section id="tab-suspensos" class="tab-content hidden space-y-6">
+            <div>
+                <h2 class="font-title text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">Jogadores Suspensos</h2>
+                <p class="text-sm text-slate-400">Listagem automática de atletas atingidos pelo regulamento disciplinar</p>
+            </div>
+
+            <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-start space-x-3 text-amber-300 text-sm">
+                <i class="fa-solid fa-circle-info text-amber-400 text-lg mt-0.5"></i>
+                <div>
+                    <strong class="font-semibold block">Regra Disciplinar Automática:</strong>
+                    Jogadores que somam <strong>2 ou mais cartões amarelos</strong> ou recebem <strong>1 ou mais cartões vermelhos</strong> entram automaticamente na relação de suspensos.
+                </div>
+            </div>
+
+            <div id="suspended-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Preenchido via JS -->
+            </div>
+        </section>
+
+        <!-- ABA 5: PAINEL ADMIN -->
+        <section id="tab-admin" class="tab-content hidden space-y-8">
+            <div class="border-b border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-title text-2xl sm:text-3xl font-bold text-amber-400 uppercase tracking-wide">Painel de Administração</h2>
+                    <p class="text-sm text-slate-400">Reconfigure grupos e times, edite elencos ou restaure os dados do torneio</p>
+                </div>
+            </div>
+
+            <!-- ESTRUTURA DO CAMPEONATO -->
+            <div class="glass-panel rounded-2xl p-6 space-y-6 border border-amber-500/30">
+                <h3 class="font-title text-lg font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-gears text-gold-400"></i>
+                    <span>Estrutura do Campeonato</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="cfg-group-count" class="block text-xs uppercase font-bold text-slate-400 mb-2">Quantidade de Grupos</label>
+                        <input type="number" id="cfg-group-count" min="1" max="8" value="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:border-gold-500 outline-none font-bold">
+                    </div>
+                    <div>
+                        <label for="cfg-teams-per-group" class="block text-xs uppercase font-bold text-slate-400 mb-2">Times por Grupo</label>
+                        <input type="number" id="cfg-teams-per-group" min="2" max="6" value="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:border-gold-500 outline-none font-bold">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="rebuildTournamentStructure()" class="w-full bg-gradient-to-r from-amber-600 to-gold-600 hover:from-amber-500 hover:to-gold-500 text-slate-950 font-black py-3 rounded-xl shadow-lg uppercase tracking-wider text-xs transition-all">
+                            Gerar Nova Estrutura
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GESTÃO DE TIMES E JOGADORES -->
+            <div class="glass-panel rounded-2xl p-6 space-y-6">
+                <h3 class="font-title text-lg font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-users text-gold-400"></i>
+                    <span>Gestão de Times & Jogadores</span>
+                </h3>
+
+                <div id="admin-teams-editor" class="space-y-8">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+
+            <!-- RESET DE DADOS -->
+            <div class="pt-6 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                <p class="text-xs text-slate-500">Todos os dados ficam salvos localmente neste navegador via <code class="text-slate-300">localStorage</code>.</p>
+                <button onclick="openResetConfirmModal()" class="px-4 py-2.5 bg-red-900/40 hover:bg-red-800/60 border border-red-700/50 text-red-300 rounded-xl text-xs font-bold uppercase tracking-wider transition-all">
+                    <i class="fa-solid fa-trash-can mr-2"></i> Resetar Dados do Campeonato
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="border-t border-slate-800/80 bg-libertadores-dark/80 py-5 px-4 text-center text-xs text-slate-500">
+        Copa Libertadores — Edição Amador Pro • Persistência local em <span class="text-slate-400 font-semibold">localStorage</span>
+    </footer>
+
+    <!-- MODAL 1: MATCH CENTER (JOGO AO VIVO) -->
+    <div id="modal-live-match" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-libertadores-card border border-gold-500/40 rounded-2xl w-full max-w-4xl max-h-[95vh] flex flex-col shadow-2xl overflow-hidden my-auto">
+
+            <!-- Cabeçalho do Match Center -->
+            <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <span id="live-status-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-600 text-white animate-pulse">
+                        AO VIVO
+                    </span>
+                    <span id="live-modal-group-name" class="text-xs uppercase font-bold text-slate-400 tracking-wider">GRUPO A</span>
+                </div>
+                <button onclick="closeLiveMatchModal()" aria-label="Fechar Match Center" class="text-slate-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cronômetro e Placar -->
+            <div class="p-6 bg-gradient-to-b from-slate-950 to-libertadores-card border-b border-slate-800 flex flex-col items-center">
+                <div class="flex flex-col items-center mb-6">
+                    <div id="live-match-timer" class="text-3xl sm:text-4xl font-black font-mono text-gold-400 tracking-wider">00:00</div>
+                    <div id="live-timer-controls" class="flex space-x-2 mt-2">
+                        <button id="timer-toggle-btn" onclick="toggleMatchTimer()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold uppercase">
+                            <i class="fa-solid fa-play mr-1"></i> Iniciar
+                        </button>
+                        <button onclick="resetMatchTimer()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-bold uppercase">
+                            Zerar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="w-full flex items-center justify-between max-w-2xl px-2 sm:px-6">
+                    <!-- Mandante -->
+                    <div class="flex flex-col items-center text-center w-1/3">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-full border-2 border-gold-500/50 flex items-center justify-center font-black text-lg sm:text-xl text-gold-400 shadow-lg mb-2">
+                            <span id="live-home-initials">MAND</span>
+                        </div>
+                        <h4 id="live-home-name" class="font-title font-bold text-sm sm:text-xl text-white truncate w-full">Time Mandante</h4>
+                    </div>
+
+                    <!-- Placar -->
+                    <div class="flex items-center space-x-3 sm:space-x-6 text-4xl sm:text-6xl font-black font-title">
+                        <span id="live-home-score" class="text-white">0</span>
+                        <span class="text-slate-600 text-2xl sm:text-4xl">:</span>
+                        <span id="live-away-score" class="text-white">0</span>
+                    </div>
+
+                    <!-- Visitante -->
+                    <div class="flex flex-col items-center text-center w-1/3">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded-full border-2 border-gold-500/50 flex items-center justify-center font-black text-lg sm:text-xl text-gold-400 shadow-lg mb-2">
+                            <span id="live-away-initials">VISI</span>
+                        </div>
+                        <h4 id="live-away-name" class="font-title font-bold text-sm sm:text-xl text-white truncate w-full">Time Visitante</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles de Eventos e Feed -->
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-grow space-y-6">
+                <div id="live-admin-actions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Ações Mandante -->
+                    <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-4">
+                        <h5 id="live-home-actions-title" class="font-bold text-sm text-gold-400 border-b border-slate-800 pb-2">Ações Mandante</h5>
+
+                        <div class="space-y-2">
+                            <label for="select-home-scorer" class="text-xs text-slate-400 font-semibold uppercase block">Adicionar Gol</label>
+                            <div class="flex space-x-2">
+                                <select id="select-home-scorer" class="bg-slate-950 text-white text-xs rounded-lg border border-slate-700 p-2.5 flex-grow outline-none focus:border-gold-500"></select>
+                                <button onclick="addMatchEvent('goal', 'home')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-lg text-xs font-bold shrink-0">
+                                    + GOL
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="select-home-card-player" class="text-xs text-slate-400 font-semibold uppercase block">Aplicar Cartão</label>
+                            <div class="flex space-x-2">
+                                <select id="select-home-card-player" class="bg-slate-950 text-white text-xs rounded-lg border border-slate-700 p-2.5 flex-grow outline-none focus:border-gold-500"></select>
+                                <button onclick="addMatchEvent('yellow', 'home')" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-2 rounded-lg text-xs font-bold shrink-0" title="Cartão Amarelo">
+                                    🟨
+                                </button>
+                                <button onclick="addMatchEvent('red', 'home')" class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold shrink-0" title="Cartão Vermelho">
+                                    🟥
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ações Visitante -->
+                    <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-4">
+                        <h5 id="live-away-actions-title" class="font-bold text-sm text-gold-400 border-b border-slate-800 pb-2">Ações Visitante</h5>
+
+                        <div class="space-y-2">
+                            <label for="select-away-scorer" class="text-xs text-slate-400 font-semibold uppercase block">Adicionar Gol</label>
+                            <div class="flex space-x-2">
+                                <select id="select-away-scorer" class="bg-slate-950 text-white text-xs rounded-lg border border-slate-700 p-2.5 flex-grow outline-none focus:border-gold-500"></select>
+                                <button onclick="addMatchEvent('goal', 'away')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-lg text-xs font-bold shrink-0">
+                                    + GOL
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="select-away-card-player" class="text-xs text-slate-400 font-semibold uppercase block">Aplicar Cartão</label>
+                            <div class="flex space-x-2">
+                                <select id="select-away-card-player" class="bg-slate-950 text-white text-xs rounded-lg border border-slate-700 p-2.5 flex-grow outline-none focus:border-gold-500"></select>
+                                <button onclick="addMatchEvent('yellow', 'away')" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-2 rounded-lg text-xs font-bold shrink-0" title="Cartão Amarelo">
+                                    🟨
+                                </button>
+                                <button onclick="addMatchEvent('red', 'away')" class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold shrink-0" title="Cartão Vermelho">
+                                    🟥
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feed de Eventos da Partida -->
+                <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800 space-y-3">
+                    <h5 class="text-xs uppercase font-bold text-slate-400 tracking-wider">Feed de Eventos da Partida</h5>
+                    <div id="live-match-events-log" class="space-y-2 max-h-44 overflow-y-auto custom-scrollbar text-xs">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rodapé do Match Center -->
+            <div class="bg-slate-950 px-6 py-4 border-t border-slate-800 flex flex-wrap justify-between items-center gap-3">
+                <button onclick="closeLiveMatchModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold uppercase">
+                    Fechar Janela
+                </button>
+                <button id="finish-match-btn" onclick="finishLiveMatch()" class="admin-only-element px-6 py-2.5 bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-500 hover:to-amber-500 text-slate-950 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg">
+                    Encerrar e Finalizar Partida
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SELETOR DE JOGO AO VIVO -->
+    <div id="modal-select-live" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-libertadores-card border border-slate-700 rounded-2xl w-full max-w-md p-6 space-y-5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-title text-lg font-bold text-gold-400">Selecionar Jogo Ao Vivo</h3>
+                <button onclick="closeSelectLiveModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-2.5 max-h-72 overflow-y-auto custom-scrollbar" id="select-live-match-list">
+                <!-- Preenchido via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: LOGIN DO ADMINISTRADOR -->
+    <div id="modal-admin-login" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-libertadores-card border border-gold-500/40 rounded-2xl w-full max-w-sm p-6 space-y-5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-title text-lg font-bold text-gold-400 flex items-center space-x-2">
+                    <i class="fa-solid fa-lock"></i> <span>Acesso do Administrador</span>
+                </h3>
+                <button onclick="closeAdminLoginModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="space-y-3">
+                <p class="text-xs text-slate-400">Digite a senha de administrador para gerenciar grupos, times, datas e partidas ao vivo.</p>
+                <div>
+                    <label for="admin-pass-input" class="block text-xs uppercase font-bold text-slate-400 mb-1">Senha Admin</label>
+                    <input type="password" id="admin-pass-input" onkeydown="if(event.key==='Enter') confirmAdminLogin();" placeholder="Senha padrão: 1234" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-gold-500 outline-none text-sm">
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2 border-t border-slate-800 pt-4">
+                <button onclick="closeAdminLoginModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold uppercase">Cancelar</button>
+                <button onclick="confirmAdminLogin()" class="px-4 py-2 bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-500 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: CONFIRMAÇÃO DE RESET (SEM confirm() NATIVO) -->
+    <div id="modal-confirm-reset" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-libertadores-card border border-red-500/40 rounded-2xl w-full max-w-sm p-6 space-y-5">
+            <div class="flex items-center space-x-3 text-red-400 border-b border-slate-800 pb-3">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                <h3 class="font-title text-lg font-bold text-white">Resetar Campeonato</h3>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Esta ação apagará todos os placares, eventos, datas alteradas e elencos customizados, restaurando a estrutura inicial do torneio.
+            </p>
+            <div class="flex justify-end space-x-2 border-t border-slate-800 pt-4">
+                <button onclick="closeResetConfirmModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold uppercase">Cancelar</button>
+                <button onclick="executeResetAllData()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-xs uppercase">Confirmar Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICAÇÃO TOAST -->
+    <div id="app-toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none max-w-xs sm:max-w-sm">
+        <div class="bg-libertadores-card border border-gold-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+            <i class="fa-solid fa-circle-check text-gold-400 text-lg shrink-0"></i>
+            <span id="toast-message" class="text-xs sm:text-sm font-semibold">Notificação</span>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // ESTADO GLOBAL E CONFIGURAÇÕES
+        // =========================================================================
+        const STORAGE_KEY = 'LIBERTADORES_AMADOR_PRO_DB_V1';
+        const DEFAULT_ADMIN_PASSWORD = '1234';
+
+        let isAdmin = false;
+
+        let tournament = {
+            groupsCount: 2,
+            teamsPerGroup: 4,
+            adminPassword: DEFAULT_ADMIN_PASSWORD,
+            groups: [],
+            matches: []
+        };
+
+        let currentLiveMatchId = null;
+        let matchTimerInterval = null;
+        let matchTimerSeconds = 0;
+        let isTimerRunning = false;
+        let toastTimeout = null;
+
+        // =========================================================================
+        // INICIALIZAÇÃO E AUTENTICAÇÃO
+        // =========================================================================
+        window.onload = function() {
+            try {
+                loadDatabase();
+                checkUrlMode();
+                updateAuthUI();
+                renderAllViews();
+            } catch (err) {
+                console.error('Falha na inicialização:', err);
+                generateDefaultTournament();
+                updateAuthUI();
+                renderAllViews();
+                showToast('Dados recuperados com valores padrão.');
+            }
+        };
+
+        // Verifica parâmetro ?mode=viewer na URL para forçar o modo espectador
+        function checkUrlMode() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('mode') === 'viewer') {
+                    isAdmin = false;
+                }
+            } catch (err) {
+                console.error('Erro ao ler parâmetros da URL:', err);
+            }
+        }
+
+        // Atualiza botões e visibilidade de elementos exclusivos do administrador
+        function updateAuthUI() {
+            const btn = document.getElementById('auth-mode-btn');
+            const adminElements = document.querySelectorAll('.admin-only-element');
+
+            if (isAdmin) {
+                btn.className = "px-3 py-2 bg-amber-500/15 border border-amber-500/40 text-amber-400 rounded-xl text-xs font-bold flex items-center space-x-2 transition-all hover:bg-amber-500/25";
+                btn.innerHTML = `<i class="fa-solid fa-user-shield"></i> <span class="hidden sm:inline">Modo Admin</span>`;
+                adminElements.forEach(el => el.classList.remove('hidden'));
+            } else {
+                btn.className = "px-3 py-2 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-bold flex items-center space-x-2 transition-all hover:bg-slate-800 hover:text-white";
+                btn.innerHTML = `<i class="fa-solid fa-eye"></i> <span class="hidden sm:inline">Espectador</span>`;
+                adminElements.forEach(el => el.classList.add('hidden'));
+
+                const adminTab = document.getElementById('tab-admin');
+                if (adminTab && !adminTab.classList.contains('hidden')) {
+                    switchTab('tabela');
+                }
+            }
+        }
+
+        function toggleAuthMode() {
+            if (isAdmin) {
+                isAdmin = false;
+                updateAuthUI();
+                renderAllViews();
+                showToast('Modo Espectador ativado.');
+            } else {
+                document.getElementById('admin-pass-input').value = '';
+                document.getElementById('modal-admin-login').classList.remove('hidden');
+                setTimeout(() => document.getElementById('admin-pass-input').focus(), 50);
+            }
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('modal-admin-login').classList.add('hidden');
+        }
+
+        function confirmAdminLogin() {
+            const input = document.getElementById('admin-pass-input').value;
+            const expectedPass = tournament.adminPassword || DEFAULT_ADMIN_PASSWORD;
+
+            if (input === expectedPass) {
+                isAdmin = true;
+                closeAdminLoginModal();
+                updateAuthUI();
+                renderAllViews();
+                showToast('Modo Administrador desbloqueado!');
+            } else {
+                showToast('Senha incorreta! Use "1234" ou a senha configurada.');
+            }
+        }
+
+        function copyViewerLink() {
+            try {
+                const urlObj = new URL(window.location.href);
+                urlObj.searchParams.set('mode', 'viewer');
+                const viewerUrl = urlObj.toString();
+
+                const tempInput = document.createElement('input');
+                tempInput.value = viewerUrl;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+
+                showToast('Link de espectador (?mode=viewer) copiado!');
+            } catch (err) {
+                console.error('Erro ao copiar link:', err);
+                showToast('Não foi possível copiar o link automaticamente.');
+            }
+        }
+
+        // =========================================================================
+        // PERSISTÊNCIA LOCALSTORAGE E ESTRUTURA INICIAL
+        // =========================================================================
+        function loadDatabase() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) {
+                generateDefaultTournament();
+                return;
+            }
+            const parsed = JSON.parse(raw);
+            if (!parsed || !Array.isArray(parsed.groups) || !Array.isArray(parsed.matches)) {
+                generateDefaultTournament();
+                return;
+            }
+            tournament = {
+                groupsCount: parsed.groupsCount || parsed.groups.length || 2,
+                teamsPerGroup: parsed.teamsPerGroup || (parsed.groups[0]?.teams?.length) || 4,
+                adminPassword: parsed.adminPassword || DEFAULT_ADMIN_PASSWORD,
+                groups: parsed.groups,
+                matches: parsed.matches
+            };
+        }
+
+        function saveDatabase() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(tournament));
+            } catch (err) {
+                console.error('Erro ao salvar no localStorage:', err);
+                showToast('Erro ao salvar alterações localmente.');
+            }
+        }
+
+        function generateDefaultTournament() {
+            const numGroups = 2;
+            const teamsPerGroup = 4;
+
+            const defaultTeamsByGroup = [
+                ['Atlético do Sul FC', 'Estrela Solitária EC', 'Leões do Planalto', 'União da Vila'],
+                ['Dragões do Norte', 'Águias da Serra', 'Furacão Amador', 'Tigres do Vale']
+            ];
+
+            const basePlayers = [
+                'Rafael Costa', 'Lucas Mendes', 'Mateus Almeida',
+                'Gabriel Rocha', 'Henrique Dias', 'Thiago Ferreira'
+            ];
+
+            const groups = [];
+            let teamCounter = 1;
+
+            for (let g = 0; g < numGroups; g++) {
+                const groupName = `Grupo ${String.fromCharCode(65 + g)}`;
+                const teams = [];
+
+                for (let t = 0; t < teamsPerGroup; t++) {
+                    const teamName = defaultTeamsByGroup[g]?.[t] || `Clube ${groupName.slice(-1)}-${t + 1}`;
+                    const players = basePlayers.map((pName, idx) => ({
+                        id: `p_${teamCounter}_${idx + 1}`,
+                        name: `${pName} #${idx + 1}`
+                    }));
+
+                    teams.push({
+                        id: `team_${teamCounter++}`,
+                        name: teamName,
+                        players
+                    });
+                }
+
+                groups.push({
+                    id: `group_${g + 1}`,
+                    name: groupName,
+                    teams
+                });
+            }
+
+            tournament = {
+                groupsCount: numGroups,
+                teamsPerGroup,
+                adminPassword: DEFAULT_ADMIN_PASSWORD,
+                groups,
+                matches: []
+            };
+
+            generateMatches();
+            saveDatabase();
+        }
+
+        // Gera confrontos todos contra todos dentro de cada grupo
+        function generateMatches() {
+            const matches = [];
+            let matchSeq = 1;
+            const todayStr = new Date().toISOString().slice(0, 10);
+
+            tournament.groups.forEach(group => {
+                const teams = group.teams || [];
+                let roundNumber = 1;
+
+                for (let i = 0; i < teams.length; i++) {
+                    for (let j = i + 1; j < teams.length; j++) {
+                        matches.push({
+                            id: `match_${matchSeq++}`,
+                            groupId: group.id,
+                            groupName: group.name,
+                            round: roundNumber++,
+                            homeId: teams[i].id,
+                            awayId: teams[j].id,
+                            homeScore: 0,
+                            awayScore: 0,
+                            status: 'SCHEDULED', // SCHEDULED | LIVE | FINISHED
+                            date: todayStr,
+                            events: []
+                        });
+                    }
+                }
+            });
+
+            tournament.matches = matches;
+        }
+
+        // =========================================================================
+        // NAVEGAÇÃO ENTRE ABAS
+        // =========================================================================
+        function switchTab(tabName) {
+            if (tabName === 'admin' && !isAdmin) {
+                showToast('Acesso restrito ao Modo Admin.');
+                return;
+            }
+
+            document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+            const target = document.getElementById(`tab-${tabName}`);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-gold-400', 'bg-slate-800');
+                btn.classList.add('text-slate-400');
+            });
+
+            const activeDesktop = document.getElementById(`nav-${tabName}`);
+            if (activeDesktop) {
+                activeDesktop.classList.add('text-gold-400', 'bg-slate-800');
+                activeDesktop.classList.remove('text-slate-400');
+            }
+
+            renderAllViews();
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // =========================================================================
+        // RENDERIZAÇÃO DAS TELAS
+        // =========================================================================
+        function renderAllViews() {
+            updateFilterOptions();
+            renderGroupTables();
+            renderMatches();
+            renderStatistics();
+            renderSuspensions();
+            if (isAdmin) {
+                renderAdminPanel();
+            }
+        }
+
+        // 1. TABELA & GRUPOS (P, J, V, E, D, GP, GC, SG)
+        function renderGroupTables() {
+            const container = document.getElementById('groups-container');
+            container.innerHTML = '';
+
+            tournament.groups.forEach(group => {
+                const tableMap = {};
+                group.teams.forEach(team => {
+                    tableMap[team.id] = {
+                        id: team.id,
+                        name: team.name,
+                        pts: 0,
+                        pj: 0,
+                        v: 0,
+                        e: 0,
+                        d: 0,
+                        gp: 0,
+                        gc: 0,
+                        sg: 0
+                    };
+                });
+
+                tournament.matches
+                    .filter(m => m.groupId === group.id && m.status === 'FINISHED')
+                    .forEach(match => {
+                        const home = tableMap[match.homeId];
+                        const away = tableMap[match.awayId];
+                        if (!home || !away) return;
+
+                        home.pj += 1;
+                        away.pj += 1;
+
+                        home.gp += match.homeScore;
+                        home.gc += match.awayScore;
+                        away.gp += match.awayScore;
+                        away.gc += match.homeScore;
+
+                        if (match.homeScore > match.awayScore) {
+                            home.pts += 3;
+                            home.v += 1;
+                            away.d += 1;
+                        } else if (match.homeScore < match.awayScore) {
+                            away.pts += 3;
+                            away.v += 1;
+                            home.d += 1;
+                        } else {
+                            home.pts += 1;
+                            away.pts += 1;
+                            home.e += 1;
+                            away.e += 1;
+                        }
+                    });
+
+                const rows = Object.values(tableMap)
+                    .map(row => ({ ...row, sg: row.gp - row.gc }))
+                    .sort((a, b) => {
+                        if (b.pts !== a.pts) return b.pts - a.pts;
+                        if (b.sg !== a.sg) return b.sg - a.sg;
+                        if (b.gp !== a.gp) return b.gp - a.gp;
+                        return a.name.localeCompare(b.name);
+                    });
+
+                const rowsHtml = rows.map((team, index) => {
+                    const isQualified = index < 2;
+                    const sgFormatted = team.sg > 0 ? `+${team.sg}` : `${team.sg}`;
+                    const sgColor = team.sg > 0 ? 'text-emerald-400' : team.sg < 0 ? 'text-red-400' : 'text-slate-400';
+
+                    return `
+                        <tr class="${isQualified ? 'bg-gold-500/5' : ''} hover:bg-slate-800/50 border-b border-slate-800/40 text-xs sm:text-sm">
+                            <td class="p-3 font-bold text-center ${isQualified ? 'text-gold-400' : 'text-slate-500'}">${index + 1}</td>
+                            <td class="p-3 font-bold text-white">${escapeHtml(team.name)}</td>
+                            <td class="p-3 text-center font-black text-gold-400">${team.pts}</td>
+                            <td class="p-3 text-center text-slate-300">${team.pj}</td>
+                            <td class="p-3 text-center text-slate-300">${team.v}</td>
+                            <td class="p-3 text-center text-slate-300">${team.e}</td>
+                            <td class="p-3 text-center text-slate-300">${team.d}</td>
+                            <td class="p-3 text-center text-slate-400">${team.gp}</td>
+                            <td class="p-3 text-center text-slate-400">${team.gc}</td>
+                            <td class="p-3 text-center font-semibold ${sgColor}">${sgFormatted}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                container.innerHTML += `
+                    <div class="glass-panel rounded-2xl p-5 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                                <h3 class="font-title font-bold text-lg text-gold-400 uppercase tracking-wide flex items-center space-x-2">
+                                    <i class="fa-solid fa-shield-halved text-gold-500"></i>
+                                    <span>${escapeHtml(group.name)}</span>
+                                </h3>
+                                <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-widest">Classificação</span>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="text-[10px] sm:text-xs text-slate-400 uppercase bg-slate-900/60">
+                                        <tr>
+                                            <th class="p-3 text-center">Pos</th>
+                                            <th class="p-3">Time</th>
+                                            <th class="p-3 text-center" title="Pontos">P</th>
+                                            <th class="p-3 text-center" title="Jogos">J</th>
+                                            <th class="p-3 text-center" title="Vitórias">V</th>
+                                            <th class="p-3 text-center" title="Empates">E</th>
+                                            <th class="p-3 text-center" title="Derrotas">D</th>
+                                            <th class="p-3 text-center" title="Gols Pró">GP</th>
+                                            <th class="p-3 text-center" title="Gols Contra">GC</th>
+                                            <th class="p-3 text-center" title="Saldo de Gols">SG</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${rowsHtml}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 2. JOGOS (Filtro, edição de data no modo admin e acesso ao jogo ao vivo)
+        function renderMatches() {
+            const container = document.getElementById('matches-container');
+            const selectedGroup = document.getElementById('filter-group-matches').value;
+            container.innerHTML = '';
+
+            const filtered = selectedGroup === 'ALL'
+                ? tournament.matches
+                : tournament.matches.filter(m => m.groupId === selectedGroup);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="glass-panel rounded-2xl p-8 text-center text-slate-400 text-sm">Nenhum jogo encontrado para o filtro selecionado.</div>`;
+                return;
+            }
+
+            filtered.forEach(match => {
+                const homeTeam = getTeamById(match.homeId);
+                const awayTeam = getTeamById(match.awayId);
+                const isLive = match.status === 'LIVE';
+                const isFinished = match.status === 'FINISHED';
+
+                const formattedDate = match.date
+                    ? match.date.split('-').reverse().join('/')
+                    : 'A definir';
+
+                const dateControlHtml = isAdmin
+                    ? `<input type="date" value="${match.date || ''}" onchange="updateMatchDate('${match.id}', this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-2.5 py-1 outline-none focus:border-gold-500">`
+                    : `<span class="bg-slate-900 text-slate-300 text-xs rounded-lg px-2.5 py-1 border border-slate-800">${formattedDate}</span>`;
+
+                let actionBtnHtml = '';
+                if (isAdmin) {
+                    if (isLive) {
+                        actionBtnHtml = `
+                            <button onclick="openLiveMatchModal('${match.id}')" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-xs uppercase flex items-center space-x-2 animate-pulse">
+                                <i class="fa-solid fa-tower-broadcast"></i> <span>No Ar</span>
+                            </button>
+                        `;
+                    } else if (isFinished) {
+                        actionBtnHtml = `
+                            <button onclick="openLiveMatchModal('${match.id}')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold uppercase">
+                                Súmula / Detalhes
+                            </button>
+                        `;
+                    } else {
+                        actionBtnHtml = `
+                            <button onclick="startLiveMatch('${match.id}')" class="px-4 py-2 bg-gradient-to-r from-amber-600 to-gold-600 hover:from-amber-500 hover:to-gold-500 text-slate-950 rounded-xl font-black text-xs uppercase tracking-wider flex items-center space-x-2 shadow-md">
+                                <i class="fa-solid fa-play"></i> <span>Iniciar Ao Vivo</span>
+                            </button>
+                        `;
+                    }
+                } else {
+                    if (isLive) {
+                        actionBtnHtml = `
+                            <button onclick="openLiveMatchModal('${match.id}')" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-xs uppercase flex items-center space-x-2">
+                                <i class="fa-solid fa-eye"></i> <span>Acompanhar Ao Vivo</span>
+                            </button>
+                        `;
+                    } else {
+                        actionBtnHtml = `
+                            <button onclick="openLiveMatchModal('${match.id}')" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-xl text-xs font-semibold uppercase">
+                                ${isFinished ? 'Ver Resultado' : 'Ver Partida'}
+                            </button>
+                        `;
+                    }
+                }
+
+                const statusLabel = isLive
+                    ? `<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-red-600/20 text-red-400 border border-red-600/30">Ao Vivo</span>`
+                    : isFinished
+                    ? `<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-600/20 text-emerald-400 border border-emerald-600/30">Encerrado</span>`
+                    : `<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400">Agendado</span>`;
+
+                container.innerHTML += `
+                    <div class="glass-panel rounded-xl p-4 sm:p-5 border ${isLive ? 'border-red-500/50 shadow-lg shadow-red-500/10' : 'border-slate-800'} flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex flex-col items-center md:items-start text-xs text-slate-400 space-y-1.5 w-full md:w-1/4">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-bold text-gold-400 uppercase">${escapeHtml(match.groupName)}</span>
+                                ${statusLabel}
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-regular fa-calendar text-slate-500"></i>
+                                ${dateControlHtml}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center space-x-3 sm:space-x-4 w-full md:w-2/4">
+                            <div class="w-2/5 text-right font-bold text-sm sm:text-base text-white truncate">
+                                ${escapeHtml(homeTeam ? homeTeam.name : 'Mandante')}
+                            </div>
+
+                            <div class="flex items-center space-x-2 px-3.5 py-1.5 bg-slate-950 rounded-xl border border-slate-800 font-mono font-black text-base sm:text-xl shrink-0">
+                                <span class="${isFinished ? 'text-gold-400' : 'text-white'}">${match.homeScore}</span>
+                                <span class="text-slate-600">-</span>
+                                <span class="${isFinished ? 'text-gold-400' : 'text-white'}">${match.awayScore}</span>
+                            </div>
+
+                            <div class="w-2/5 text-left font-bold text-sm sm:text-base text-white truncate">
+                                ${escapeHtml(awayTeam ? awayTeam.name : 'Visitante')}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center md:justify-end w-full md:w-1/4">
+                            ${actionBtnHtml}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateMatchDate(matchId, newDate) {
+            if (!isAdmin) return;
+            const match = tournament.matches.find(m => m.id === matchId);
+            if (!match) return;
+            match.date = newDate;
+            saveDatabase();
+            showToast('Data da partida atualizada!');
+        }
+
+        // Agrega gols, cartões amarelos e vermelhos de todos os jogadores
+        function computePlayerTotals() {
+            const totals = {};
+            tournament.groups.forEach(group => {
+                group.teams.forEach(team => {
+                    team.players.forEach(player => {
+                        totals[player.id] = {
+                            id: player.id,
+                            name: player.name,
+                            teamName: team.name,
+                            goals: 0,
+                            yellows: 0,
+                            reds: 0
+                        };
+                    });
+                });
+            });
+
+            tournament.matches.forEach(match => {
+                (match.events || []).forEach(ev => {
+                    if (!totals[ev.playerId]) return;
+                    if (ev.type === 'goal') totals[ev.playerId].goals += 1;
+                    if (ev.type === 'yellow') totals[ev.playerId].yellows += 1;
+                    if (ev.type === 'red') totals[ev.playerId].reds += 1;
+                });
+            });
+
+            return Object.values(totals);
+        }
+
+        // 3. ESTATÍSTICAS (Artilharia e Cartões)
+        function renderStatistics() {
+            const allPlayers = computePlayerTotals();
+
+            const scorers = allPlayers
+                .filter(p => p.goals > 0)
+                .sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name));
+
+            const scorersBody = document.getElementById('top-scorers-body');
+            if (scorers.length === 0) {
+                scorersBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 text-xs">Nenhum gol registrado até o momento.</td></tr>`;
+            } else {
+                scorersBody.innerHTML = scorers.map((p, idx) => `
+                    <tr class="hover:bg-slate-800/40">
+                        <td class="p-3 font-bold ${idx === 0 ? 'text-gold-400' : 'text-slate-500'}">${idx + 1}º</td>
+                        <td class="p-3 text-white font-semibold">${escapeHtml(p.name)}</td>
+                        <td class="p-3 text-slate-400 text-xs">${escapeHtml(p.teamName)}</td>
+                        <td class="p-3 text-right font-black text-emerald-400 text-base">${p.goals}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const cardPlayers = allPlayers
+                .filter(p => p.yellows > 0 || p.reds > 0)
+                .sort((a, b) => (b.reds * 2 + b.yellows) - (a.reds * 2 + a.yellows) || a.name.localeCompare(b.name));
+
+            const cardsBody = document.getElementById('cards-ranking-body');
+            if (cardPlayers.length === 0) {
+                cardsBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 text-xs">Nenhum cartão aplicado até o momento.</td></tr>`;
+            } else {
+                cardsBody.innerHTML = cardPlayers.map(p => `
+                    <tr class="hover:bg-slate-800/40">
+                        <td class="p-3 text-white font-semibold">${escapeHtml(p.name)}</td>
+                        <td class="p-3 text-slate-400 text-xs">${escapeHtml(p.teamName)}</td>
+                        <td class="p-3 text-center text-yellow-400 font-bold">${p.yellows}</td>
+                        <td class="p-3 text-center text-red-500 font-bold">${p.reds}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // 4. SUSPENSOS (2 cartões amarelos ou 1 vermelho)
+        function renderSuspensions() {
+            const container = document.getElementById('suspended-list-container');
+            container.innerHTML = '';
+
+            const suspended = computePlayerTotals().filter(p => p.yellows >= 2 || p.reds >= 1);
+
+            if (suspended.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400 text-sm glass-panel rounded-2xl border border-slate-800">
+                        <i class="fa-solid fa-shield-check text-3xl mb-3 text-emerald-500/70 block"></i>
+                        Nenhum jogador suspenso no momento.
+                    </div>
+                `;
+                return;
+            }
+
+            suspended.forEach(p => {
+                const reasons = [];
+                if (p.reds >= 1) reasons.push(`${p.reds} Cartão Vermelho`);
+                if (p.yellows >= 2) reasons.push(`${p.yellows} Cartões Amarelos`);
+
+                container.innerHTML += `
+                    <div class="glass-panel rounded-xl p-4 border border-red-500/30 flex items-center space-x-4">
+                        <div class="w-12 h-12 shrink-0 rounded-full bg-red-950/80 border border-red-500/50 flex items-center justify-center text-red-500 text-xl">
+                            <i class="fa-solid fa-ban"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="font-bold text-white text-base truncate">${escapeHtml(p.name)}</h4>
+                            <p class="text-xs text-slate-400 truncate">${escapeHtml(p.teamName)}</p>
+                            <span class="inline-block mt-1.5 text-[10px] font-bold uppercase tracking-wider text-red-300 bg-red-950/80 px-2.5 py-0.5 rounded border border-red-800/70">
+                                ${escapeHtml(reasons.join(' • '))}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 5. PAINEL ADMIN (Estrutura, Times e Elencos)
+        function renderAdminPanel() {
+            if (!isAdmin) return;
+            const container = document.getElementById('admin-teams-editor');
+            container.innerHTML = '';
+
+            document.getElementById('cfg-group-count').value = tournament.groupsCount;
+            document.getElementById('cfg-teams-per-group').value = tournament.teamsPerGroup;
+
+            tournament.groups.forEach(group => {
+                const teamsHtml = group.teams.map(team => {
+                    const playersHtml = team.players.map(player => `
+                        <div class="flex items-center space-x-2">
+                            <input type="text" value="${escapeAttr(player.name)}" onchange="updatePlayerName('${group.id}', '${team.id}', '${player.id}', this.value)" class="bg-slate-950 text-xs text-white rounded-lg border border-slate-800 px-2.5 py-1.5 w-full outline-none focus:border-gold-500">
+                            <button onclick="removePlayer('${group.id}', '${team.id}', '${player.id}')" title="Remover jogador" class="text-red-500 hover:text-red-400 px-2 py-1 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `).join('');
+
+                    return `
+                        <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-800 space-y-3">
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Nome do Time</label>
+                                <input type="text" value="${escapeAttr(team.name)}" onchange="updateTeamName('${group.id}', '${team.id}', this.value)" class="bg-slate-950 text-gold-400 font-bold text-sm rounded-lg border border-slate-700 px-3 py-1.5 outline-none focus:border-gold-500 w-full">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase font-bold text-slate-400 block">Elenco (${team.players.length} jogadores)</label>
+                                <div class="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                                    ${playersHtml}
+                                </div>
+                                <button onclick="addPlayer('${group.id}', '${team.id}')" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center space-x-1 pt-1">
+                                    <i class="fa-solid fa-plus"></i> <span>Adicionar Jogador</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML += `
+                    <div class="space-y-4 border-b border-slate-800 pb-6 last:border-b-0 last:pb-0">
+                        <h4 class="font-title font-bold text-lg text-white flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gold-500"></span>
+                            <span>${escapeHtml(group.name)}</span>
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${teamsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function rebuildTournamentStructure() {
+            if (!isAdmin) return;
+            const groupsCount = Math.min(8, Math.max(1, parseInt(document.getElementById('cfg-group-count').value, 10) || 2));
+            const teamsPerGroup = Math.min(6, Math.max(2, parseInt(document.getElementById('cfg-teams-per-group').value, 10) || 4));
+
+            const groups = [];
+            let teamSeq = 1;
+
+            for (let g = 0; g < groupsCount; g++) {
+                const letter = String.fromCharCode(65 + g);
+                const teams = [];
+
+                for (let t = 0; t < teamsPerGroup; t++) {
+                    const teamName = `Time ${letter}${t + 1}`;
+                    const players = Array.from({ length: 6 }, (_, idx) => ({
+                        id: `p_${teamSeq}_${idx + 1}`,
+                        name: `Atleta ${letter}${t + 1}-${idx + 1}`
+                    }));
+
+                    teams.push({
+                        id: `team_${teamSeq++}`,
+                        name: teamName,
+                        players
+                    });
+                }
+
+                groups.push({
+                    id: `group_${g + 1}`,
+                    name: `Grupo ${letter}`,
+                    teams
+                });
+            }
+
+            tournament.groupsCount = groupsCount;
+            tournament.teamsPerGroup = teamsPerGroup;
+            tournament.groups = groups;
+            generateMatches();
+            saveDatabase();
+            renderAllViews();
+            showToast(`Nova estrutura gerada: ${groupsCount} grupo(s) com ${teamsPerGroup} time(s).`);
+        }
+
+        function updateTeamName(groupId, teamId, newName) {
+            if (!isAdmin) return;
+            const group = tournament.groups.find(g => g.id === groupId);
+            const team = group?.teams.find(t => t.id === teamId);
+            if (!team) return;
+            team.name = newName.trim() || 'Time Sem Nome';
+            saveDatabase();
+            renderGroupTables();
+            renderMatches();
+            showToast('Nome do time salvo!');
+        }
+
+        function updatePlayerName(groupId, teamId, playerId, newName) {
+            if (!isAdmin) return;
+            const group = tournament.groups.find(g => g.id === groupId);
+            const team = group?.teams.find(t => t.id === teamId);
+            const player = team?.players.find(p => p.id === playerId);
+            if (!player) return;
+            player.name = newName.trim() || 'Jogador';
+            saveDatabase();
+            renderStatistics();
+            renderSuspensions();
+        }
+
+        function addPlayer(groupId, teamId) {
+            if (!isAdmin) return;
+            const group = tournament.groups.find(g => g.id === groupId);
+            const team = group?.teams.find(t => t.id === teamId);
+            if (!team) return;
+            team.players.push({
+                id: `p_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                name: `Novo Jogador ${team.players.length + 1}`
+            });
+            saveDatabase();
+            renderAdminPanel();
+            showToast('Jogador adicionado ao elenco!');
+        }
+
+        function removePlayer(groupId, teamId, playerId) {
+            if (!isAdmin) return;
+            const group = tournament.groups.find(g => g.id === groupId);
+            const team = group?.teams.find(t => t.id === teamId);
+            if (!team) return;
+            team.players = team.players.filter(p => p.id !== playerId);
+            saveDatabase();
+            renderAdminPanel();
+            renderStatistics();
+            renderSuspensions();
+            showToast('Jogador removido do elenco.');
+        }
+
+        function openResetConfirmModal() {
+            if (!isAdmin) return;
+            document.getElementById('modal-confirm-reset').classList.remove('hidden');
+        }
+
+        function closeResetConfirmModal() {
+            document.getElementById('modal-confirm-reset').classList.add('hidden');
+        }
+
+        function executeResetAllData() {
+            if (!isAdmin) return;
+            localStorage.removeItem(STORAGE_KEY);
+            resetMatchTimer();
+            generateDefaultTournament();
+            closeResetConfirmModal();
+            renderAllViews();
+            showToast('Campeonato resetado para os dados padrão!');
+        }
+
+        // =========================================================================
+        // MATCH CENTER (JOGO AO VIVO), CRONÔMETRO E SELETOR
+        // =========================================================================
+        function startLiveMatch(matchId) {
+            if (!isAdmin) return;
+            const match = tournament.matches.find(m => m.id === matchId);
+            if (!match) return;
+            match.status = 'LIVE';
+            saveDatabase();
+            openLiveMatchModal(matchId);
+            renderMatches();
+        }
+
+        function openLiveMatchSelector() {
+            const container = document.getElementById('select-live-match-list');
+            container.innerHTML = '';
+
+            if (tournament.matches.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Nenhuma partida disponível.</p>`;
+            } else {
+                tournament.matches.forEach(match => {
+                    const home = getTeamById(match.homeId);
+                    const away = getTeamById(match.awayId);
+                    const statusBadge = match.status === 'LIVE'
+                        ? `<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-red-600 text-white">Ao Vivo</span>`
+                        : match.status === 'FINISHED'
+                        ? `<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-900/70 text-emerald-300">Encerrado</span>`
+                        : `<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-gold-400">Agendado</span>`;
+
+                    container.innerHTML += `
+                        <button onclick="selectMatchFromModal('${match.id}')" class="w-full text-left p-3 bg-slate-900 hover:bg-slate-800 rounded-xl border border-slate-800 flex justify-between items-center transition-all">
+                            <div class="min-w-0 pr-2">
+                                <div class="text-[10px] uppercase font-bold text-slate-400">${escapeHtml(match.groupName)}</div>
+                                <div class="text-xs font-bold text-white truncate">${escapeHtml(home?.name || 'Mandante')} ${match.homeScore} x ${match.awayScore} ${escapeHtml(away?.name || 'Visitante')}</div>
+                            </div>
+                            ${statusBadge}
+                        </button>
+                    `;
+                });
+            }
+
+            document.getElementById('modal-select-live').classList.remove('hidden');
+        }
+
+        function closeSelectLiveModal() {
+            document.getElementById('modal-select-live').classList.add('hidden');
+        }
+
+        function selectMatchFromModal(matchId) {
+            closeSelectLiveModal();
+            const match = tournament.matches.find(m => m.id === matchId);
+            if (isAdmin && match && match.status === 'SCHEDULED') {
+                startLiveMatch(matchId);
+            } else {
+                openLiveMatchModal(matchId);
+            }
+        }
+
+        function openLiveMatchModal(matchId) {
+            const targetId = matchId || tournament.matches.find(m => m.status === 'LIVE')?.id || tournament.matches[0]?.id;
+            const match = tournament.matches.find(m => m.id === targetId);
+            if (!match) {
+                showToast('Nenhuma partida encontrada.');
+                return;
+            }
+
+            currentLiveMatchId = match.id;
+            const homeTeam = getTeamById(match.homeId);
+            const awayTeam = getTeamById(match.awayId);
+
+            const badge = document.getElementById('live-status-badge');
+            if (match.status === 'LIVE') {
+                badge.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-600 text-white animate-pulse";
+                badge.textContent = 'AO VIVO';
+            } else if (match.status === 'FINISHED') {
+                badge.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white";
+                badge.textContent = 'ENCERRADO';
+            } else {
+                badge.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-700 text-slate-200";
+                badge.textContent = 'AGENDADO';
+            }
+
+            document.getElementById('live-modal-group-name').textContent = match.groupName;
+            document.getElementById('live-home-name').textContent = homeTeam?.name || 'Mandante';
+            document.getElementById('live-away-name').textContent = awayTeam?.name || 'Visitante';
+            document.getElementById('live-home-initials').textContent = (homeTeam?.name || 'MAN').slice(0, 4).toUpperCase();
+            document.getElementById('live-away-initials').textContent = (awayTeam?.name || 'VIS').slice(0, 4).toUpperCase();
+            document.getElementById('live-home-score').textContent = match.homeScore;
+            document.getElementById('live-away-score').textContent = match.awayScore;
+
+            populatePlayerSelect('select-home-scorer', homeTeam);
+            populatePlayerSelect('select-away-scorer', awayTeam);
+            populatePlayerSelect('select-home-card-player', homeTeam);
+            populatePlayerSelect('select-away-card-player', awayTeam);
+
+            const canEditMatch = isAdmin && match.status !== 'FINISHED';
+            document.getElementById('live-timer-controls').classList.toggle('hidden', !canEditMatch);
+            document.getElementById('live-admin-actions-grid').classList.toggle('hidden', !canEditMatch);
+            document.getElementById('finish-match-btn').classList.toggle('hidden', !canEditMatch);
+
+            renderLiveEventsLog(match);
+            document.getElementById('modal-live-match').classList.remove('hidden');
+        }
+
+        function closeLiveMatchModal() {
+            document.getElementById('modal-live-match').classList.add('hidden');
+            renderAllViews();
+        }
+
+        function populatePlayerSelect(selectId, team) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '<option value="">Selecione o jogador...</option>';
+            (team?.players || []).forEach(player => {
+                select.innerHTML += `<option value="${escapeAttr(player.id)}">${escapeHtml(player.name)}</option>`;
+            });
+        }
+
+        function addMatchEvent(type, side) {
+            if (!isAdmin) return;
+            const match = tournament.matches.find(m => m.id === currentLiveMatchId);
+            if (!match || match.status === 'FINISHED') return;
+
+            const team = side === 'home' ? getTeamById(match.homeId) : getTeamById(match.awayId);
+            const selectId = type === 'goal'
+                ? (side === 'home' ? 'select-home-scorer' : 'select-away-scorer')
+                : (side === 'home' ? 'select-home-card-player' : 'select-away-card-player');
+
+            const playerId = document.getElementById(selectId).value;
+            if (!playerId) {
+                showToast('Selecione um jogador antes de registrar o evento.');
+                return;
+            }
+
+            const player = team?.players.find(p => p.id === playerId);
+            const minute = document.getElementById('live-match-timer').textContent;
+
+            if (!Array.isArray(match.events)) match.events = [];
+            match.events.push({
+                id: `ev_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+                type,
+                teamId: team?.id || '',
+                teamName: team?.name || '',
+                playerId,
+                playerName: player?.name || 'Jogador',
+                minute
+            });
+
+            if (type === 'goal') {
+                if (side === 'home') match.homeScore += 1;
+                else match.awayScore += 1;
+                document.getElementById('live-home-score').textContent = match.homeScore;
+                document.getElementById('live-away-score').textContent = match.awayScore;
+            }
+
+            saveDatabase();
+            renderLiveEventsLog(match);
+
+            const label = type === 'goal' ? 'Gol registrado!' : type === 'yellow' ? 'Cartão amarelo aplicado!' : 'Cartão vermelho aplicado!';
+            showToast(label);
+        }
+
+        function renderLiveEventsLog(match) {
+            const container = document.getElementById('live-match-events-log');
+            const events = match.events || [];
+
+            if (events.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 italic">Nenhum evento registrado nesta partida.</p>`;
+                return;
+            }
+
+            container.innerHTML = [...events].reverse().map(ev => {
+                let iconHtml = '';
+                if (ev.type === 'goal') {
+                    iconHtml = `<span class="text-emerald-400 font-bold">⚽ GOL</span>`;
+                } else if (ev.type === 'yellow') {
+                    iconHtml = `<span class="text-yellow-400 font-bold">🟨 Amarelo</span>`;
+                } else {
+                    iconHtml = `<span class="text-red-500 font-bold">🟥 Vermelho</span>`;
+                }
+
+                return `
+                    <div class="flex justify-between items-center bg-slate-900 px-3 py-2 rounded-lg border border-slate-800">
+                        <div class="flex items-center space-x-2 min-w-0">
+                            <span class="font-mono text-gold-400 font-bold shrink-0">[${escapeHtml(ev.minute || '00:00')}]</span>
+                            <span class="text-white font-semibold truncate">${escapeHtml(ev.playerName)}</span>
+                            <span class="text-slate-500 hidden sm:inline truncate">(${escapeHtml(ev.teamName || '')})</span>
+                        </div>
+                        <div class="shrink-0 ml-2">${iconHtml}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function finishLiveMatch() {
+            if (!isAdmin) return;
+            const match = tournament.matches.find(m => m.id === currentLiveMatchId);
+            if (!match) return;
+
+            match.status = 'FINISHED';
+            if (isTimerRunning) {
+                toggleMatchTimer();
+            }
+            saveDatabase();
+            closeLiveMatchModal();
+            renderAllViews();
+            showToast('Partida encerrada e tabela atualizada!');
+        }
+
+        function toggleMatchTimer() {
+            if (!isAdmin) return;
+            const btn = document.getElementById('timer-toggle-btn');
+
+            if (isTimerRunning) {
+                clearInterval(matchTimerInterval);
+                matchTimerInterval = null;
+                isTimerRunning = false;
+                btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Continuar`;
+                btn.classList.remove('bg-amber-600', 'hover:bg-amber-500');
+                btn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+            } else {
+                isTimerRunning = true;
+                btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pausar`;
+                btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+                btn.classList.add('bg-amber-600', 'hover:bg-amber-500');
+
+                matchTimerInterval = setInterval(() => {
+                    matchTimerSeconds += 1;
+                    const mins = String(Math.floor(matchTimerSeconds / 60)).padStart(2, '0');
+                    const secs = String(matchTimerSeconds % 60).padStart(2, '0');
+                    document.getElementById('live-match-timer').textContent = `${mins}:${secs}`;
+                }, 1000);
+            }
+        }
+
+        function resetMatchTimer() {
+            if (!isAdmin) return;
+            clearInterval(matchTimerInterval);
+            matchTimerInterval = null;
+            isTimerRunning = false;
+            matchTimerSeconds = 0;
+            document.getElementById('live-match-timer').textContent = '00:00';
+            const btn = document.getElementById('timer-toggle-btn');
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Iniciar`;
+                btn.classList.remove('bg-amber-600', 'hover:bg-amber-500');
+                btn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+            }
+        }
+
+        // =========================================================================
+        // UTILITÁRIOS
+        // =========================================================================
+        function getTeamById(teamId) {
+            for (const group of tournament.groups) {
+                const found = group.teams.find(t => t.id === teamId);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        function updateFilterOptions() {
+            const select = document.getElementById('filter-group-matches');
+            if (!select) return;
+            const current = select.value;
+            select.innerHTML = '<option value="ALL">Todos os Grupos</option>';
+            tournament.groups.forEach(group => {
+                select.innerHTML += `<option value="${escapeAttr(group.id)}">${escapeHtml(group.name)}</option>`;
+            });
+            select.value = [...select.options].some(o => o.value === current) ? current : 'ALL';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('app-toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function escapeAttr(str) {
+            return escapeHtml(str);
+        }
+    </script>
+</body>
+</html>
